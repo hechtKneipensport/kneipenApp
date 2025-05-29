@@ -22,11 +22,11 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
   btn.disabled = true;
 
   try {
-    // 🧪 1. Kneipe anhand QR-Code/URL prüfen
+    // 1. Kneipe anhand QR-Code prüfen
     const kneipeFilter = {
       filters: JSON.stringify([
         {
-          brickName: "id_kneipe", // Das Feld, das du für den QR-Code verwendest
+          brickName: "id_kneipe",
           operator: "==",
           value: kneipenCode
         }
@@ -51,7 +51,7 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
 
     const kneipeId = kneipeData[0].id;
 
-    // 🧪 2. Prüfen, ob Nutzer existiert
+    // 2. Prüfen, ob Nutzer existiert
     const nutzerFilter = {
       filters: JSON.stringify([
         {
@@ -73,22 +73,37 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
     let nutzerId;
 
     if (nutzerData.length === 0) {
-      // 🆕 Nutzer anlegen
-      const createNutzer = await fetch(`${BASE_URL}/records/nutzer`, {
+      // Nutzer existiert nicht → Registrierung starten
+      await fetch("/api/registrieren", {
         method: "POST",
-        headers,
-        body: JSON.stringify({ nutzer_email: email })
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email })
       });
 
-      if (!createNutzer.ok) throw new Error("Fehler beim Nutzer-Anlegen");
-
-      const createdNutzer = await createNutzer.json();
-      nutzerId = createdNutzer.id;
-    } else {
-      nutzerId = nutzerData[0].id;
+      message.classList.remove("hidden");
+      message.textContent = "📧 Du bist noch nicht registriert. Prüfe deine E-Mails für den Verifizierungslink.";
+      btn.disabled = false;
+      return;
     }
 
-    // 🧪 3. Prüfen, ob bereits eingelöst
+    const nutzer = nutzerData[0];
+    nutzerId = nutzer.id;
+
+    if (!nutzer.verifiziert) {
+      // Nutzer vorhanden, aber nicht verifiziert → Mail erneut senden
+      await fetch("/api/registrieren", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email })
+      });
+
+      message.classList.remove("hidden");
+      message.textContent = "📧 Bitte bestätige deine E-Mail. Wir haben dir den Link erneut geschickt.";
+      btn.disabled = false;
+      return;
+    }
+
+    // 3. Prüfen, ob bereits eingelöst
     const scanFilter = {
       filters: JSON.stringify([
         {
@@ -119,12 +134,12 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
     const existingScans = await alreadyExistsResponse.json();
 
     if (existingScans.length === 0) {
-      // 🟢 Scanvorgang anlegen
+      // Noch nicht eingelöst → anlegen
       const createScan = await fetch(`${BASE_URL}/records/scanvorgaenge`, {
         method: "POST",
         headers,
         body: JSON.stringify({
-          email: email, // Optional: als Info
+          email: email,
           kneipe: kneipeId,
           nutzer: nutzerId,
           status: "Erfolgreich"
@@ -139,7 +154,7 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
         message.textContent = "❌ Zeit abgelaufen. Bitte scanne erneut.";
       }, 30000);
     } else {
-      // 🔴 Bereits eingelöst
+      // Bereits eingelöst
       message.classList.remove("hidden");
       message.textContent = "⚠️ Du hast dein Freigetränk bereits eingelöst.";
     }
