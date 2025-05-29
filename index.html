@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Freigetränk einlösen</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" type="image/png" href="/favicon.ico">
+</head>
+<body class="bg-neutral-900 text-white min-h-screen flex flex-col items-center justify-center px-4">
+
+  <!-- Logo -->
+  <img src="./Assets/kneipensport-weiss_s.webp" alt="Kneipensport Logo" class="w-48 mb-8">
+
+  <!-- Titel und Beschreibung -->
+  <div class="text-center mb-6">
+    <h1 class="text-2xl font-bold">🍻 Freigetränk einlösen</h1>
+    <p class="text-gray-300 mt-2 text-sm">Gib deine E-Mail-Adresse ein, um dein Freigetränk zu erhalten.</p>
+  </div>
+
+  <!-- Formular -->
+  <div class="w-full max-w-sm">
+    <input type="email" id="emailInput" placeholder="deine@email.de"
+           class="w-full px-4 py-3 rounded-md border border-white bg-transparent placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent">
+
+    <button id="submitBtn"
+            class="w-full mt-4 bg-white text-black font-bold py-3 rounded-md hover:bg-neutral-200 transition">
+      Getränk einlösen
+    </button>
+
+    <div id="message" class="mt-4 text-sm text-center hidden"></div>
+  </div>
+
+  <!-- Hinweis unten -->
+  <p class="text-xs text-gray-500 mt-10">Powered by Kneipensport</p>
+
+  <script src="script.js"></script>
+</body>
+</html>
