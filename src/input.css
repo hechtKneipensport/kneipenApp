@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+@layer components{
+    body{
+        @apply bg-neutral-900 text-white min-h-screen flex flex-col items-center justify-center px-4;
+    }
+    button {
+        @apply w-full mt-4 bg-white text-black font-bold py-3 rounded-md hover:bg-neutral-200 transition;
+    }
+    input{
+        @apply w-full px-4 py-3 rounded-md border border-white bg-transparent placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent;
+    }
+    h1{
+        @apply text-2xl font-bold mb-2 text-center;
+    }
+
+    p{
+        @apply text-gray-300 m-2 text-sm text-center;
+    }
+    .form{
+        @apply w-full max-w-sm
+    }
+    #message{
+        @apply mt-4 text-sm text-center;
+    }
+    .smallHint{
+        @apply text-xs text-gray-500 mt-10;
+    }
+}
