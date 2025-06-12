@@ -5,10 +5,10 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Nur POST erlaubt" });
   }
 
-  const { email } = req.body;
+  const { name, email } = req.body;
 
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return res.status(400).json({ error: "Ungültige E-Mail-Adresse" });
+  if (!name || !email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return res.status(400).json({ error: "Ungültige Eingaben" });
   }
 
   const API_KEY = process.env.UNIVELOP_API_KEY;
@@ -52,6 +52,7 @@ export default async function handler(req, res) {
         headers,
         body: JSON.stringify({
         nutzer_email: email,
+        nutzer_name: name,
         verifiziert: false,
         verifizierung_token: token
         })
@@ -87,7 +88,8 @@ export default async function handler(req, res) {
       method: "PATCH",
       headers,
       body: JSON.stringify({
-        verifizierung_token: token
+        verifizierung_token: token,
+        nutzer_name: name
       })
     });
 

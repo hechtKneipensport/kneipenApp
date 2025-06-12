@@ -1,8 +1,14 @@
 document.getElementById("submitBtn").addEventListener("click", async () => {
+  const name = document.getElementById("nameInput").value.trim();
   const email = document.getElementById("emailInput").value.trim();
   const message = document.getElementById("message");
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!name) {
+    message.textContent = "Bitte gib deinen Namen ein.";
+    message.classList.remove("hidden");
+  return;
+  }
   if (!emailRegex.test(email)) {
     message.textContent = "Bitte gib eine gültige E-Mail-Adresse ein.";
     message.classList.remove("hidden");
@@ -13,7 +19,7 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
     const res = await fetch("/api/registrieren", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email })
+      body: JSON.stringify({ name, email })
     });
 
     const data = await res.json();
